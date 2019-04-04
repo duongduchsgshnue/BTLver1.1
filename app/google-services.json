@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "869740550734",
+    "firebase_url": "https://androidbtl-master.firebaseio.com",
+    "project_id": "androidbtl-master",
+    "storage_bucket": "androidbtl-master.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869740550734:android:95d1600ce7f78028",
+        "android_client_info": {
+          "package_name": "com.example.pokemongo1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869740550734-b86cc2e9vv3bi9igql3kud32ua63teen.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pokemongo1",
+            "certificate_hash": "bd070ad64c53180956dcbdec712d9c0c3a328e13"
+          }
+        },
+        {
+          "client_id": "869740550734-7k0gdulkqboe4sepbipjkef3hag2opms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpos8fzh1lN8gR74POzr_lmVa2cPQMImg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "869740550734-7k0gdulkqboe4sepbipjkef3hag2opms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
