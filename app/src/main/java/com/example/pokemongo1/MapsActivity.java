@@ -190,24 +190,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
-    /*public void recycleview(){
-        // cái này để set cho recycleview, tìm hiểu thêm ở trang chủ dev android,
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycle_view);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-        recyclerView.setLayoutManager(layoutManager);
-        // 3 dòng code dưới để tạo gạch kẻ ngang cho mỗi item trong recycle view
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
-        Drawable drawable = ContextCompat.getDrawable(getApplication(),R.drawable.custom_divider);
-        dividerItemDecoration.setDrawable(drawable);
 
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        pokemonAdapter = new PokemonAdapter(dsPoke,getApplicationContext(),getApplicationContext());
-        recyclerView.setAdapter(pokemonAdapter);
-
-
-
-    }*/
 
     // 2 hàm dưới dùng để cấp quyền vào GPS của người dùng
     void CheckUserPermsions() {
@@ -416,7 +399,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 // cái mình up lên firebase là pokemon trong pppp
                                                 // nếu bằng nhau thì push pppp (upload lên firebase)
                                                 if(pokemon.getName().equals(pokemonp.getName())){
-                                                    mData.child("Pokemon111").push().setValue(pokemonp);
+                                                    Bundle extras = getIntent().getExtras();
+                                                    String idfb = extras.getString("idfb");
+
+                                                    mData.child(idfb).push().setValue(pokemonp);
                                                     dsPoke.add(pokemonp);
 
                                                 }
@@ -449,7 +435,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     }
                                     // đoạn này để lấy Pokemon pppp đã lưu xuống, sau đó dùng hàm đã cho điền theo
                                     // hướng dẫn
-                                    mData.child("Pokemon111").addChildEventListener(new ChildEventListener() {
+                                    Bundle extras = getIntent().getExtras();
+                                    String idfb = extras.getString("idfb");
+                                    mData.child(idfb).addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                             Pokemonp pokemonpzzzzx = dataSnapshot.getValue(Pokemonp.class);

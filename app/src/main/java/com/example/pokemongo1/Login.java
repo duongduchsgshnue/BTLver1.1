@@ -45,6 +45,10 @@ public class Login extends AppCompatActivity {
                 startActivity(intent);
                 loginButton.setReadPermissions("public_profile");
                 resuilt();
+                // Lấy id của user loginResult.getAccessToken().getUserId()
+                Intent intent1 = new Intent(Login.this,MapsActivity.class);
+                intent1.putExtra("idfb",loginResult.getAccessToken().getUserId());
+                ///////////////////////////////////////////////////////
                 ParseUser.getCurrentUser().setUsername(name);
                 ParseUser.getCurrentUser().put("id",id);
             }
