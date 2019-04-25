@@ -351,12 +351,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                //
                                 //if (pokemon.isCatch() == false) {
                                     // 3 dòng code duoi để gán pokemon lên map thôi !!!
-                                    LatLng locofpokemon = new LatLng(pokemon.getLocation().getLatitude(), pokemon.getLocation().getLongitude());
+                                    /*LatLng locofpokemon = new LatLng(pokemon.getLocation().getLatitude(), pokemon.getLocation().getLongitude());
                                     mMap.addMarker(new MarkerOptions().position(locofpokemon).title(pokemon.getName()).icon(BitmapDescriptorFactory.fromResource(pokemon.getImage())));
+                                    */
                                     //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17));
                                     // khi bắt được Pokemon
 
                                     if (MyLocationListener.location.distanceTo(pokemon.getLocation()) < 150) {
+                                        LatLng locofpokemon = new LatLng(pokemon.getLocation().getLatitude(), pokemon.getLocation().getLongitude());
+                                        mMap.addMarker(new MarkerOptions().position(locofpokemon).title(pokemon.getName()).icon(BitmapDescriptorFactory.fromResource(pokemon.getImage())));
                                         //Lưu pokemon vào list
                                         // kiểm tra xem đã tồn tại phần tử ???? và add pokemon vào dsPoke. dspoke là 1 arraylist để lưu các pokemon trong mảng thôi. Thông qua adapter
                                         //nó sẽ đưa lên app (qua adapter ở hàm onCreate)
@@ -384,6 +387,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                     dsPoke.add(pokemonp);
 
                                                 }
+
                                             }
 
 
@@ -408,7 +412,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         notificationManager.notify("...", 123, builder.build());
 
 
-
+                                        list.remove(pokemon);
 
                                     }
                                     // đoạn này để lấy Pokemon pppp đã lưu xuống, sau đó dùng hàm đã cho điền theo
