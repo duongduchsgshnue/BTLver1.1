@@ -1,9 +1,11 @@
 package com.example.pokemongo1;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -15,6 +17,9 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.parse.LogInCallback;
+import com.parse.ParseAnonymousUtils;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
@@ -24,6 +29,7 @@ public class Login extends AppCompatActivity {
     private CallbackManager callbackManager;
     private LoginButton loginButton;
     private String id,name;
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,31 +46,51 @@ public class Login extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d("Login","Success!");
-                Intent intent = new Intent();
-                intent.setClass(Login.this, MapsActivity.class);
+                Intent intent = new Intent(Login.this, MapsActivity.class);
+                //intent.setClass(Login.this, MapsActivity.class);
+                intent.putExtra("idfb",loginResult.getAccessToken().getUserId());
                 startActivity(intent);
                 loginButton.setReadPermissions("public_profile");
-                resuilt();
+                //resuilt();
                 // Lấy id của user loginResult.getAccessToken().getUserId()
-                Intent intent1 = new Intent(Login.this,MapsActivity.class);
+                /*
+                Intent intent1 = new Intent();
                 intent1.putExtra("idfb",loginResult.getAccessToken().getUserId());
+                setResult(RESULT_OK,intent1);
+                finish();
+                */
                 ///////////////////////////////////////////////////////
-                ParseUser.getCurrentUser().setUsername(name);
+                //ParseUser.getCurrentUser().setUsername(name);
                 ParseUser.getCurrentUser().put("id",id);
+                if (ParseUser.getCurrentUser() == null) {
+                    ParseAnonymousUtils.logIn(new LogInCallback() {
+                        @Override
+                        public void done(ParseUser user, ParseException e) {
+                            if (e == null) {
+                                Log.i("Info", "Annonymous hero..");
+                            } else {
+                                Log.i("..", "false");
+                            }
+
+                            //redirectActivity();
+
+                        }
+                    });
+                }
             }
 
             @Override
             public void onCancel() {
-
+                Toast.makeText(context,"Lỗi không vào được facebook",Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-
+                Toast.makeText(context,"Lỗi không vào được facebook",Toast.LENGTH_LONG).show();
             }
         });
     }
-
+    /*
     private void resuilt() {
         GraphRequest graphRequest = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -83,7 +109,7 @@ public class Login extends AppCompatActivity {
         parameters.putString("fields","name,id");
         graphRequest.setParameters(parameters);
         graphRequest.executeAsync();
-    }
+    }*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);

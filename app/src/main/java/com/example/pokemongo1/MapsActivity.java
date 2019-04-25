@@ -62,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationListener locationListener;
     MediaPlayer player;
     private GoogleMap mMap;
+
     // tạo button trong activity để load
     //  lại activity giúp cập nhật vị trí của người dùng
     Button btn4;
@@ -138,57 +139,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ///////////////set firebase////////////////////
         mData = FirebaseDatabase.getInstance().getReference();
         /////////////////////set button//////////
+        /*
         btn4 = (Button) findViewById(R.id.btn4);
         btn4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent();
                 intent.setClass(MapsActivity.this, MapsActivity.class);
                 startActivity(intent);
+
+
                 //////////////////////////////////////////
-
-                /*mData.child("Pokemon111").addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Pokemonp pokemonpzzzzx = dataSnapshot.getValue(Pokemonp.class);
-                        //Toast.makeText(MapsActivity.this,pokemonpzzzzx.getName(),Toast.LENGTH_LONG).show();
-                        for(int k = 0; k < pppp.size(); k++){
-                            Pokemonp pokemon5 = pppp.get(k);
-                            if(pokemonpzzzzx.getName().equals(pokemon5.getName())){
-                                dsPoke.add(pokemon5);
-                                Log.i("heell" , pokemon5.getName());
-                            }
-
-                        }
-                        pokemonAdapter.notifyDataSetChanged();
-
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });*/
 
             }
         });
 
-
+      */
     }
 
 
@@ -237,11 +204,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MyLocationListener myloc = new MyLocationListener();
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3, 10, myloc);
-        Location lastKnownLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //Location lastKnownLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         //////////////////////////////////////////////////////////////////
         // cái này tạo ra database tên "Request" để thêm vào parse lưu trữ vị trí người dùng
         /// trang chủ của parse : back4app.com tên tk : duongduchsgshnue
         /// mật khẩu : Fizzdanhca
+        /*
 
         ParseObject request = new ParseObject("Request");
         // tạo query để truy vấn trên bảng Request theo mình hiểu là vậy, nó sẽ xóa đi tên
@@ -284,6 +252,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+*/
         /////////////////////////////////////////////////////////////
      // tạo 1 luồng thread để cập nhật vị trí = việc sử dụng runOnUiThread(new Runable(){....}) -> cập nhật trên Thread UI
         // và cho luồng đó chạy thôi
@@ -297,6 +266,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // tạo thread để thay đổi UI trên màn hình
     // nếu k sử dụng thread thì máy sẽ bị dừng lại k hoạt động được
+
     class thread extends Thread {
         thread(){
             // cái này set thuộc tính cho vị trí oldloc để so sánh thôi
@@ -324,16 +294,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     runOnUiThread(new Runnable() {
                         //@Override
                         public void run() {
-
+                            mMap.clear();
                             // 4 dòng code dưới là lấy vị trí hiện tại của mình
                             // có thể mình viết thừa 1 số hàm k cần thiết
                             MyLocationListener myloc = new MyLocationListener();
                             LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3, 1, myloc);
-                            Location lastKnownLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            //Location lastKnownLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+
+
                             ///////////////////////////////////////////////////////////////
                             /////////////////////////////////////////////////
                             // đoạn dưới tạo truy vấn query1 để lấy từ bảng Request, mình cần lấy địa chỉ(Location thôi) ở cột "location"
+                            /*
                             ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Request");
                             final ParseGeoPoint parseGeoPoint1 = new ParseGeoPoint(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
                             query1.whereNear("location",parseGeoPoint1);
@@ -365,20 +339,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                       }
                                     }
                                                    });
-
+                                                   */
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(MyLocationListener.location.getLatitude(), MyLocationListener.location.getLongitude())).icon(BitmapDescriptorFactory.fromResource(R.drawable.mez)));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(MyLocationListener.location.getLatitude(), MyLocationListener.location.getLongitude()), 17));
+                            Bundle extras = getIntent().getExtras();
+                            String idfb = extras.getString("idfb");
 
                             for (int i = 0; i < list.size(); i++) {
                                 // tạo đối tượng pokemon để get các thành phần trong arraylist
                                 Pokemon pokemon = list.get(i);
                                //
-                                if (pokemon.isCatch() == false) {
+                                //if (pokemon.isCatch() == false) {
                                     // 3 dòng code duoi để gán pokemon lên map thôi !!!
                                     LatLng locofpokemon = new LatLng(pokemon.getLocation().getLatitude(), pokemon.getLocation().getLongitude());
                                     mMap.addMarker(new MarkerOptions().position(locofpokemon).title(pokemon.getName()).icon(BitmapDescriptorFactory.fromResource(pokemon.getImage())));
                                     //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17));
                                     // khi bắt được Pokemon
 
-                                    if (MyLocationListener.location.distanceTo(pokemon.getLocation()) < 1500) {
+                                    if (MyLocationListener.location.distanceTo(pokemon.getLocation()) < 150) {
                                         //Lưu pokemon vào list
                                         // kiểm tra xem đã tồn tại phần tử ???? và add pokemon vào dsPoke. dspoke là 1 arraylist để lưu các pokemon trong mảng thôi. Thông qua adapter
                                         //nó sẽ đưa lên app (qua adapter ở hàm onCreate)
@@ -399,8 +377,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 // cái mình up lên firebase là pokemon trong pppp
                                                 // nếu bằng nhau thì push pppp (upload lên firebase)
                                                 if(pokemon.getName().equals(pokemonp.getName())){
-                                                    Bundle extras = getIntent().getExtras();
-                                                    String idfb = extras.getString("idfb");
+                                                    //Bundle extras = getIntent().getExtras();
+                                                    //String idfb = extras.getString("idfb");
 
                                                     mData.child(idfb).push().setValue(pokemonp);
                                                     dsPoke.add(pokemonp);
@@ -435,8 +413,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     }
                                     // đoạn này để lấy Pokemon pppp đã lưu xuống, sau đó dùng hàm đã cho điền theo
                                     // hướng dẫn
-                                    Bundle extras = getIntent().getExtras();
-                                    String idfb = extras.getString("idfb");
+
                                     mData.child(idfb).addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -477,7 +454,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         }
                                     });
 
-                                }
+                                //}
 
 
                             }
@@ -515,34 +492,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-        list.add(new Pokemon(R.drawable.bulbasaurz, "Bulbasaur", "45",false, 21.040450, 105.783106));
-        list.add(new Pokemon(R.drawable.charmanderz, "Charmander","32", false, 21.039949, 105.780231));
-        list.add(new Pokemon(R.drawable.metapodz, "Metapod","25", false, 21.037045, 105.784351));
-        list.add(new Pokemon(R.drawable.pidgeotz, "Pidgeot", "45",false, 21.037556, 105.784748));
-        list.add(new Pokemon(R.drawable.poliwrathz, "Poliwrathz","60", false, 21.035483, 105.783729));
-        list.add(new Pokemon(R.drawable.arbok ,"Arbok","48",false,21.008645,105.814592));
-        list.add(new Pokemon(R.drawable.bellsprout,"bellsprout","59",false,21.022596,105.803273));
-        list.add(new Pokemon(R.drawable.diglett,"diglett","78",false,21.026402,105.796160));
-        list.add(new Pokemon(R.drawable.dodrio,"dodrio","56",false,21.036266,105.789358));
-        list.add(new Pokemon(R.drawable.dragonite,"dragonite","89",false,21.035785,105.786204));
-        list.add(new Pokemon(R.drawable.exeggutor,"exeggutor","19",false,21.032030,105.784305));
-        list.add(new Pokemon(R.drawable.gengar,"gengar","57",false,21.028475,105.779895));
-        list.add(new Pokemon(R.drawable.growlithe,"growlithe","77",false,21.027423,105.778318));
-        list.add(new Pokemon(R.drawable.haunter,"haunter","74",false,21.017218,105.790813));
-        list.add(new Pokemon(R.drawable.hitmonlee,"hitmonlee","90",false,21.009772,105.797779));
-        list.add(new Pokemon(R.drawable.jolteon,"jolteon","78",false,21.006119,105.801079));
-        list.add(new Pokemon(R.drawable.koffing,"koffing","64",false,21.004637,105.798826));
-        list.add(new Pokemon(R.drawable.krabby,"krabby","86",false,21.002203,105.800875));
-        list.add(new Pokemon(R.drawable.magnemite,"magnemite","76",false,20.998267,105.802989));
-        list.add(new Pokemon(R.drawable.mankey,"mankey","39",false,20.986466,105.814105));
-        list.add(new Pokemon(R.drawable.nidoran,"nidoran","64",false,21.000149,105.857124));
-        list.add(new Pokemon(R.drawable.poliwag,"poliwag","78",false,20.999207,105.854517));
-        list.add(new Pokemon(R.drawable.ponyta,"ponyta","65",false,20.998796,105.853498));
-        list.add(new Pokemon(R.drawable.sandshrew,"sandshrew","65",false,20.997354,105.850290));
-        list.add(new Pokemon(R.drawable.scyther,"scyther","67",false,20.996032, 105.845494));
-        list.add(new Pokemon(R.drawable.snorlax,"snorlax","87",false,20.991114,105.855300));
-        list.add(new Pokemon(R.drawable.venomoth,"venomoth","98",false,21.005291,105.845651));
-        list.add(new Pokemon(R.drawable.vulpix,"vulpix","76",false,21.002697,105.851080));
+        list.add(new Pokemon(R.drawable.bulbasaurz, "Bulbasaur", "45", 21.040450, 105.783106));
+        list.add(new Pokemon(R.drawable.charmanderz, "Charmander","32",  21.039949, 105.780231));
+        list.add(new Pokemon(R.drawable.metapodz, "Metapod","25",  21.037045, 105.784351));
+        list.add(new Pokemon(R.drawable.pidgeotz, "Pidgeot", "45", 21.037556, 105.784748));
+        list.add(new Pokemon(R.drawable.poliwrathz, "Poliwrathz","60",  21.035483, 105.783729));
+        list.add(new Pokemon(R.drawable.arbok ,"Arbok","48",21.008645,105.814592));
+        list.add(new Pokemon(R.drawable.bellsprout,"bellsprout","59",21.022596,105.803273));
+        list.add(new Pokemon(R.drawable.diglett,"diglett","78",21.026402,105.796160));
+        list.add(new Pokemon(R.drawable.dodrio,"dodrio","56",21.036266,105.789358));
+        list.add(new Pokemon(R.drawable.dragonite,"dragonite","89",21.035785,105.786204));
+        list.add(new Pokemon(R.drawable.exeggutor,"exeggutor","19",21.032030,105.784305));
+        list.add(new Pokemon(R.drawable.gengar,"gengar","57",21.028475,105.779895));
+        list.add(new Pokemon(R.drawable.growlithe,"growlithe","77",21.027423,105.778318));
+        list.add(new Pokemon(R.drawable.haunter,"haunter","74",21.017218,105.790813));
+        list.add(new Pokemon(R.drawable.hitmonlee,"hitmonlee","90",21.009772,105.797779));
+        list.add(new Pokemon(R.drawable.jolteon,"jolteon","78",21.006119,105.801079));
+        list.add(new Pokemon(R.drawable.koffing,"koffing","64",21.004637,105.798826));
+        list.add(new Pokemon(R.drawable.krabby,"krabby","86",21.002203,105.800875));
+        list.add(new Pokemon(R.drawable.magnemite,"magnemite","76",20.998267,105.802989));
+        list.add(new Pokemon(R.drawable.mankey,"mankey","39",20.986466,105.814105));
+        list.add(new Pokemon(R.drawable.nidoran,"nidoran","64",21.000149,105.857124));
+        list.add(new Pokemon(R.drawable.poliwag,"poliwag","78",20.999207,105.854517));
+        list.add(new Pokemon(R.drawable.ponyta,"ponyta","65",20.998796,105.853498));
+        list.add(new Pokemon(R.drawable.sandshrew,"sandshrew","65",20.997354,105.850290));
+        list.add(new Pokemon(R.drawable.scyther,"scyther","67",20.996032, 105.845494));
+        list.add(new Pokemon(R.drawable.snorlax,"snorlax","87",20.991114,105.855300));
+        list.add(new Pokemon(R.drawable.venomoth,"venomoth","98",21.005291,105.845651));
+        list.add(new Pokemon(R.drawable.vulpix,"vulpix","76",21.002697,105.851080));
     }
 
     ArrayList<Pokemonp> pppp = new ArrayList<>();

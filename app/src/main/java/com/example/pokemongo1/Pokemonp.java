@@ -5,6 +5,7 @@ public class Pokemonp {
     private String name;
     private String power;
     public  Pokemonp(){}
+
     public Pokemonp(int image, String name, String power) {
         Image = image;
         this.name = name;
