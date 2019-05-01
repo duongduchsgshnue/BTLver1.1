@@ -61,8 +61,8 @@ public class Login extends AppCompatActivity {
                 */
                 ///////////////////////////////////////////////////////
                 //ParseUser.getCurrentUser().setUsername(name);
-                ParseUser.getCurrentUser().put("id",id);
-                if (ParseUser.getCurrentUser() == null) {
+                //ParseUser.getCurrentUser().put("id",id);
+                /*if (ParseUser.getCurrentUser() == null) {
                     ParseAnonymousUtils.logIn(new LogInCallback() {
                         @Override
                         public void done(ParseUser user, ParseException e) {
@@ -76,7 +76,7 @@ public class Login extends AppCompatActivity {
 
                         }
                     });
-                }
+                }*/
             }
 
             @Override

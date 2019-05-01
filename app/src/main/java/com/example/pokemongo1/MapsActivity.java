@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -37,7 +38,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -203,7 +206,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // search thêm trên android developer để biết thêm về các tham sô trong hàm
         MyLocationListener myloc = new MyLocationListener();
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3, 10, myloc);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,0 , 0, myloc);
         //Location lastKnownLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         //////////////////////////////////////////////////////////////////
         // cái này tạo ra database tên "Request" để thêm vào parse lưu trữ vị trí người dùng
@@ -299,124 +302,96 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             // có thể mình viết thừa 1 số hàm k cần thiết
                             MyLocationListener myloc = new MyLocationListener();
                             LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3, 1, myloc);
+                            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, myloc);
                             //Location lastKnownLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-
-
-                            ///////////////////////////////////////////////////////////////
-                            /////////////////////////////////////////////////
-                            // đoạn dưới tạo truy vấn query1 để lấy từ bảng Request, mình cần lấy địa chỉ(Location thôi) ở cột "location"
-                            /*
-                            ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Request");
-                            final ParseGeoPoint parseGeoPoint1 = new ParseGeoPoint(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-                            query1.whereNear("location",parseGeoPoint1);
-                            //query.setLimit(10);
-                            query1.findInBackground(new FindCallback<ParseObject>() {
-                                @Override
-                                public void done(List<ParseObject> objects, ParseException e) {
-                                    if(e == null) {
-                                        // kiểm tra xem pt tồn tại không, nếu có sẽ lấy hết xuống
-                                        // sau đó dùng mMap để gán tọa độ nhận được từ DB lên bản đồ
-                                        // à đoạn contains để kiểm tra nó tồn tại chưa, nếu rồi thì thôi k add lên map nữa
-                                        // nếu chưa thì add lên map
-                                        if (objects.size() > 0) {
-                                            for (ParseObject object : objects) {
-
-                                                ParseGeoPoint requestLocation = (ParseGeoPoint) object.get("location");
-                                                //usernames.add(object.getString("username"));
-                                                if(!usernames.contains(object.getString("username"))) {
-                                                    Log.i("...............",".....................");
-                                                    mMap.addMarker(new MarkerOptions().position(new LatLng(requestLocation.getLatitude(), requestLocation.getLongitude())).icon(BitmapDescriptorFactory.fromResource(R.drawable.mez)));
-                                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(MyLocationListener.location.getLatitude(), MyLocationListener.location.getLongitude()), 17));
-                                                    usernames.add(object.getString("username"));
-                                                }
-                                                //usernames.add(object.getString("username"));
-
-
-                                            }
-                                        }
-                                      }
-                                    }
-                                                   });
-                                                   */
-                            mMap.addMarker(new MarkerOptions().position(new LatLng(MyLocationListener.location.getLatitude(), MyLocationListener.location.getLongitude())).icon(BitmapDescriptorFactory.fromResource(R.drawable.mez)));
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(MyLocationListener.location.getLatitude(), MyLocationListener.location.getLongitude())).title("You").icon(BitmapDescriptorFactory.fromResource(R.drawable.mez)));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(MyLocationListener.location.getLatitude(), MyLocationListener.location.getLongitude()), 17));
+
                             Bundle extras = getIntent().getExtras();
-                            String idfb = extras.getString("idfb");
+                            final String idfb = extras.getString("idfb");
 
                             for (int i = 0; i < list.size(); i++) {
                                 // tạo đối tượng pokemon để get các thành phần trong arraylist
                                 Pokemon pokemon = list.get(i);
-                               //
+                                //
                                 //if (pokemon.isCatch() == false) {
-                                    // 3 dòng code duoi để gán pokemon lên map thôi !!!
+                                // 3 dòng code duoi để gán pokemon lên map thôi !!!
                                     /*LatLng locofpokemon = new LatLng(pokemon.getLocation().getLatitude(), pokemon.getLocation().getLongitude());
                                     mMap.addMarker(new MarkerOptions().position(locofpokemon).title(pokemon.getName()).icon(BitmapDescriptorFactory.fromResource(pokemon.getImage())));
                                     */
-                                    //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17));
-                                    // khi bắt được Pokemon
+                                //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17));
+                                // khi bắt được Pokemon
 
-                                    if (MyLocationListener.location.distanceTo(pokemon.getLocation()) < 150) {
-                                        LatLng locofpokemon = new LatLng(pokemon.getLocation().getLatitude(), pokemon.getLocation().getLongitude());
-                                        mMap.addMarker(new MarkerOptions().position(locofpokemon).title(pokemon.getName()).icon(BitmapDescriptorFactory.fromResource(pokemon.getImage())));
-                                        //Lưu pokemon vào list
-                                        // kiểm tra xem đã tồn tại phần tử ???? và add pokemon vào dsPoke. dspoke là 1 arraylist để lưu các pokemon trong mảng thôi. Thông qua adapter
-                                        //nó sẽ đưa lên app (qua adapter ở hàm onCreate)
-                                        if (!arr.contains(pokemon.getName())) {
-                                            numOfPokemon = numOfPokemon + 1;
-                                            // 2 dòng code dưới để add pokemon vào recycle view đã tạo bên trên
-                                            //dsPoke.add(pokemon);
-                                            arr.add(pokemon.getName());
-                                            // khi catch đc pokeom thì nó phát nhạc
-                                            player = MediaPlayer.create(MapsActivity.this,R.raw.mario);
-                                            player.start();
-                                            // thêm pokemon vào firebase bằng  cách mình tạo 1 arraylist pppp chứa pokemon y hệt
-                                            // nhưng nó k có tọa độ, hay hình ảnh vì Firebase mình không lưu được tọa độ, còn hình ảnh
-                                            // up lên firebase lẫn tải xuống nó lằng nhằng nên thôi
-                                            for(int j = 0; j <pppp.size();j++){
-                                                Pokemonp pokemonp = pppp.get(j);
-                                                // đoạn này mình kiểm tra pokemon bắt được nó bằng phần tử nào trong pppp
-                                                // cái mình up lên firebase là pokemon trong pppp
-                                                // nếu bằng nhau thì push pppp (upload lên firebase)
-                                                if(pokemon.getName().equals(pokemonp.getName())){
-                                                    //Bundle extras = getIntent().getExtras();
-                                                    //String idfb = extras.getString("idfb");
+                                if (MyLocationListener.location.distanceTo(pokemon.getLocation()) < 100) {
+                                    LatLng locofpokemon = new LatLng(pokemon.getLocation().getLatitude(), pokemon.getLocation().getLongitude());
+                                    mMap.addMarker(new MarkerOptions().position(locofpokemon).title(pokemon.getName()).icon(BitmapDescriptorFactory.fromResource(pokemon.getImage())));
+                                    Log.i(pokemon.getName(), pokemon.getLocation().getLatitude() + "      " + pokemon.getLocation().getLongitude() + "    hell");
+                                    //Lưu pokemon vào list
+                                    // kiểm tra xem đã tồn tại phần tử ???? và add pokemon vào dsPoke. dspoke là 1 arraylist để lưu các pokemon trong mảng thôi. Thông qua adapter
+                                    //nó sẽ đưa lên app (qua adapter ở hàm onCreate)
+                                    //if() {//////////////////////////////////////////////////
 
-                                                    mData.child(idfb).push().setValue(pokemonp);
-                                                    dsPoke.add(pokemonp);
 
+                                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                        @Override
+                                        public boolean onMarkerClick(Marker marker) {
+                                            for (int i = 0; i < list.size(); i++) {
+
+                                                Pokemon pokemon = list.get(i);
+                                                //if (!arr.contains(pokemon.getName())) {
+                                                if (marker.getTitle().equals(pokemon.getName())) {
+                                                    Log.i("cath pokemon", "  " + marker.getTitle() + "   " + pokemon.getName());
+                                                    if (!arr.contains(pokemon.getName())) {
+                                                        numOfPokemon = numOfPokemon + 1;
+                                                        // 2 dòng code dưới để add pokemon vào recycle view đã tạo bên trên
+
+                                                        arr.add(pokemon.getName());
+                                                        // khi catch đc pokeom thì nó phát nhạc
+                                                        player = MediaPlayer.create(MapsActivity.this, R.raw.mario);
+                                                        player.start();
+                                                        for (int j = 0; j < pppp.size(); j++) {
+                                                            Pokemonp pokemonp = pppp.get(j);
+
+                                                            if (pokemon.getName().equals(pokemonp.getName())) {
+
+                                                                mData.child(idfb).push().setValue(pokemonp);
+                                                                dsPoke.add(pokemonp);
+
+                                                            }
+
+                                                        }
+
+                                                    }
+                                                    NotificationCompat.Builder builder = new NotificationCompat.Builder(MapsActivity.this);
+                                                    builder.setSmallIcon(R.drawable.pikachu);
+                                                    builder.setContentTitle("Bạn vừa bắt được " + pokemon.getName());
+                                                    builder.setContentText("Bạn hiện đang có " + " .Hãy vào túi kiểm tra");
+                                                    Intent intent = new Intent(MapsActivity.this, MapsActivity.class);
+
+                                                    //  MapsActivity.class
+                                                    PendingIntent pendingIntent = PendingIntent.getActivity(MapsActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+                                                    builder.setContentIntent(pendingIntent);
+                                                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                                    notificationManager.notify("...", 123, builder.build());
+
+
+                                                    //list.remove(pokemon);
                                                 }
 
                                             }
-
-
-
-
-
-
+                                            return true;
                                         }
-
-                                        //tạo notification chứa tên con pokemon vừa bắt và tổng số pokemon hiện có
-                                        NotificationCompat.Builder builder = new NotificationCompat.Builder(MapsActivity.this);
-                                        builder.setSmallIcon(R.drawable.pikachu);
-                                        builder.setContentTitle("Bạn vừa bắt được " + pokemon.getName());
-                                        builder.setContentText("Bạn hiện đang có " + numOfPokemon + " .Hãy vào túi kiểm tra");
-                                        Intent intent = new Intent(MapsActivity.this, MapsActivity.class);
-
-                                        //  MapsActivity.class
-                                        PendingIntent pendingIntent = PendingIntent.getActivity(MapsActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-
-                                        builder.setContentIntent(pendingIntent);
-                                        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                                        notificationManager.notify("...", 123, builder.build());
+                                    });
 
 
-                                        list.remove(pokemon);
 
-                                    }
-                                    // đoạn này để lấy Pokemon pppp đã lưu xuống, sau đó dùng hàm đã cho điền theo
-                                    // hướng dẫn
+
+
+                                }
+                                // đoạn này để lấy Pokemon pppp đã lưu xuống, sau đó dùng hàm đã cho điền theo
+                                // hướng dẫn
 
                                     mData.child(idfb).addChildEventListener(new ChildEventListener() {
                                         @Override
@@ -428,12 +403,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 Pokemonp pokemon5 = pppp.get(k);
                                                 if(pokemonpzzzzx.getName().equals(pokemon5.getName()) && !arr.contains(pokemon5.getName())){
                                                     dsPoke.add(pokemon5);
-                                                    Log.i("heell" , pokemon5.getName());
+                                                    //Log.i("heell" , pokemon5.getName());
                                                     arr.add(pokemon5.getName());
                                                 }
 
                                             }
-                                            //pokemonAdapter.notifyDataSetChanged();
 
                                         }
 
@@ -461,9 +435,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 //}
 
 
+
+
                             }
-
-
                             // .. set lại adapter mỗi lần thay đổi
                             pokemonAdapter.notifyDataSetChanged();
                         }
@@ -494,37 +468,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addPokemon() {
 
+        for (int i = 1; i < 20; i++) {
+            list.add(new Pokemon(R.drawable.bulbasaurz, "Bulbasaur", "45", 21.040450 + ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.783106 + ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
 
 
-        list.add(new Pokemon(R.drawable.bulbasaurz, "Bulbasaur", "45", 21.040450, 105.783106));
-        list.add(new Pokemon(R.drawable.charmanderz, "Charmander","32",  21.039949, 105.780231));
-        list.add(new Pokemon(R.drawable.metapodz, "Metapod","25",  21.037045, 105.784351));
-        list.add(new Pokemon(R.drawable.pidgeotz, "Pidgeot", "45", 21.037556, 105.784748));
-        list.add(new Pokemon(R.drawable.poliwrathz, "Poliwrathz","60",  21.035483, 105.783729));
-        list.add(new Pokemon(R.drawable.arbok ,"Arbok","48",21.008645,105.814592));
-        list.add(new Pokemon(R.drawable.bellsprout,"bellsprout","59",21.022596,105.803273));
-        list.add(new Pokemon(R.drawable.diglett,"diglett","78",21.026402,105.796160));
-        list.add(new Pokemon(R.drawable.dodrio,"dodrio","56",21.036266,105.789358));
-        list.add(new Pokemon(R.drawable.dragonite,"dragonite","89",21.035785,105.786204));
-        list.add(new Pokemon(R.drawable.exeggutor,"exeggutor","19",21.032030,105.784305));
-        list.add(new Pokemon(R.drawable.gengar,"gengar","57",21.028475,105.779895));
-        list.add(new Pokemon(R.drawable.growlithe,"growlithe","77",21.027423,105.778318));
-        list.add(new Pokemon(R.drawable.haunter,"haunter","74",21.017218,105.790813));
-        list.add(new Pokemon(R.drawable.hitmonlee,"hitmonlee","90",21.009772,105.797779));
-        list.add(new Pokemon(R.drawable.jolteon,"jolteon","78",21.006119,105.801079));
-        list.add(new Pokemon(R.drawable.koffing,"koffing","64",21.004637,105.798826));
-        list.add(new Pokemon(R.drawable.krabby,"krabby","86",21.002203,105.800875));
-        list.add(new Pokemon(R.drawable.magnemite,"magnemite","76",20.998267,105.802989));
-        list.add(new Pokemon(R.drawable.mankey,"mankey","39",20.986466,105.814105));
-        list.add(new Pokemon(R.drawable.nidoran,"nidoran","64",21.000149,105.857124));
-        list.add(new Pokemon(R.drawable.poliwag,"poliwag","78",20.999207,105.854517));
-        list.add(new Pokemon(R.drawable.ponyta,"ponyta","65",20.998796,105.853498));
-        list.add(new Pokemon(R.drawable.sandshrew,"sandshrew","65",20.997354,105.850290));
-        list.add(new Pokemon(R.drawable.scyther,"scyther","67",20.996032, 105.845494));
-        list.add(new Pokemon(R.drawable.snorlax,"snorlax","87",20.991114,105.855300));
-        list.add(new Pokemon(R.drawable.venomoth,"venomoth","98",21.005291,105.845651));
-        list.add(new Pokemon(R.drawable.vulpix,"vulpix","76",21.002697,105.851080));
+            list.add(new Pokemon(R.drawable.charmanderz, "Charmander", "32", 21.039949+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0),+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.metapodz, "Metapod", "25",21.039949+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.780231+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.pidgeotz, "Pidgeot", "45",21.037045 + ((float) (Math.random() * ((0.05 - 0) + 0)) + 0),105.784351 + ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.poliwrathz, "Poliwrathz", "60",21.037556+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0),105.784748 + ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.arbok, "Arbok", "48", 21.008645+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.814592+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.bellsprout, "bellsprout", "59", 21.022596+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.803273+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.diglett, "diglett", "78", 21.026402+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.796160+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.dodrio, "dodrio", "56", 21.036266+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.789358+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.dragonite, "dragonite", "89", 21.035785+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.786204+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.exeggutor, "exeggutor", "19", 21.032030+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.784305+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.gengar, "gengar", "57", 21.028475+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.779895+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.growlithe, "growlithe", "77", 21.027423+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.778318+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.haunter, "haunter", "74", 21.017218+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.790813+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.hitmonlee, "hitmonlee", "90", 21.009772+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.797779+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.jolteon, "jolteon", "78", 21.006119+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.801079+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.koffing, "koffing", "64", 21.004637+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.798826+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.krabby, "krabby", "86", 21.002203+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.800875+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.magnemite, "magnemite", "76", 20.998267+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.802989+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.mankey, "mankey", "39", 20.986466+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.814105+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.nidoran, "nidoran", "64", 21.000149+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.857124+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.poliwag, "poliwag", "78", 20.999207+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.854517+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.ponyta, "ponyta", "65", 20.998796+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.853498+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.sandshrew, "sandshrew", "65", 20.997354+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.850290+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.scyther, "scyther", "67", 20.996032+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.845494+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.snorlax, "snorlax", "87", 20.991114+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.855300+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.venomoth, "venomoth", "98", 21.005291+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.845651+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+            list.add(new Pokemon(R.drawable.vulpix, "vulpix", "76", 21.002697+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0), 105.851080+ ((float) (Math.random() * ((0.05 - 0) + 0)) + 0)));
+        }
+
     }
+
+
+
 
     ArrayList<Pokemonp> pppp = new ArrayList<>();
     public void addPokemonp(){
