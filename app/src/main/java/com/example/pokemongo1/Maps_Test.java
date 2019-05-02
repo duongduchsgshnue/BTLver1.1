@@ -94,7 +94,7 @@ public class Maps_Test extends FragmentActivity implements OnMapReadyCallback, L
         tabHost.setup();
 
         // setup map tab
-        TabHost.TabSpec mapTab = tabHost.newTabSpec("mapTab");
+        final TabHost.TabSpec mapTab = tabHost.newTabSpec("mapTab");
         mapTab.setContent(R.id.tab1);
         mapTab.setIndicator("Map");
         tabHost.addTab(mapTab);
@@ -110,7 +110,10 @@ public class Maps_Test extends FragmentActivity implements OnMapReadyCallback, L
             @Override
             public void onTabChanged(String tabId) {
                 if (bagTab.getTag().equals(tabId)) {
+                    stopLocationChangeListener();
                     viewListPokemon();
+                } else if (mapTab.getTag().equals(tabId)) {
+                    startLocationChangeListener();
                 }
             }
         });
@@ -166,7 +169,7 @@ public class Maps_Test extends FragmentActivity implements OnMapReadyCallback, L
      * Get my location by GPS
      * @return my location
      */
-    private void getMyLocation() {
+    private void startLocationChangeListener() {
         // Check permission use GPS
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION
@@ -179,6 +182,12 @@ public class Maps_Test extends FragmentActivity implements OnMapReadyCallback, L
                 , locationCallback, null);
     }
 
+    private void stopLocationChangeListener() {
+        if (fusedLocationProviderClient != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -187,7 +196,7 @@ public class Maps_Test extends FragmentActivity implements OnMapReadyCallback, L
                 if (grantResults.length > 1
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    getMyLocation();
+                    startLocationChangeListener();
                 }
         }
     }
@@ -294,7 +303,7 @@ public class Maps_Test extends FragmentActivity implements OnMapReadyCallback, L
 
     @Override
     public void onMapLoaded() {
-        getMyLocation();
+        startLocationChangeListener();
     }
 
     @Override
@@ -310,6 +319,24 @@ public class Maps_Test extends FragmentActivity implements OnMapReadyCallback, L
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationChangeListener();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopLocationChangeListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startLocationChangeListener();
     }
 
     private ArrayList<Pokemon> getPokemonWilds() {

@@ -24,6 +24,10 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.ViewHold
         this.context2 = context2;
     }
 
+    public PokemonAdapter(ArrayList<Pokemonp> pokemonps) {
+        this.pokemons = pokemonps;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
