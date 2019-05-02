@@ -9,6 +9,7 @@ public class Pokemon  extends Pokemonp{
     //private boolean isCatch;
     private Location location;
     //private String power;
+    private String id;
 
 
 
@@ -18,7 +19,21 @@ public class Pokemon  extends Pokemonp{
     }
 
 
-    Pokemon(int Image, String name,String power, double lat, double log){
+    Pokemon(String id, int Image, String name, String power, double lat, double log){
+        super(Image,name,power);
+        //this.Image = Image;
+        //this.name = name;
+        //this.power = power;
+        //this.isCatch = isCatch;
+        // Location(String provider)
+        //Construct a new Location with a named provider.
+        this.id = id;
+        location = new Location(name);
+        location.setLatitude(lat);
+        location.setLongitude(log);
+    }
+
+    Pokemon(int Image, String name, String power, double lat, double log){
         super(Image,name,power);
         //this.Image = Image;
         //this.name = name;
@@ -72,4 +87,7 @@ public class Pokemon  extends Pokemonp{
         this.power = power;
     }
     */
+    public String getId() {
+        return id;
+    }
 }

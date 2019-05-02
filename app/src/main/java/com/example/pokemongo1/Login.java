@@ -42,15 +42,17 @@ public class Login extends AppCompatActivity {
     }
 
     private void setLoginButton() {
+        loginButton.setReadPermissions("public_profile");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                Toast.makeText(Login.this, "Success", Toast.LENGTH_LONG).show();
                 Log.d("Login","Success!");
                 Intent intent = new Intent(Login.this, MapsActivity.class);
                 //intent.setClass(Login.this, MapsActivity.class);
                 intent.putExtra("idfb",loginResult.getAccessToken().getUserId());
                 startActivity(intent);
-                loginButton.setReadPermissions("public_profile");
+
                 //resuilt();
                 // Lấy id của user loginResult.getAccessToken().getUserId()
                 /*
@@ -81,12 +83,22 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                Toast.makeText(context,"Lỗi không vào được facebook",Toast.LENGTH_LONG).show();
+                Toast.makeText(Login.this,"facebook cancel",Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent();
+                intent.setClass(Login.this, Maps_Test.class);
+                intent.putExtra("idfb", "100036382504484");
+                startActivity(intent);
             }
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(context,"Lỗi không vào được facebook",Toast.LENGTH_LONG).show();
+                Toast.makeText(Login.this,"Lỗi không vào được facebook",Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent();
+                intent.setClass(Login.this, Maps_Test.class);
+                //intent.putExtra("idfb", "100036382504484");
+                startActivity(intent);
             }
         });
     }
@@ -114,8 +126,8 @@ public class Login extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
-    protected void onStart(){
-        LoginManager.getInstance().logOut();
-        super.onStart();
-    }
+//    protected void onStart(){
+//        LoginManager.getInstance().logOut();
+//        super.onStart();
+//    }
 }
