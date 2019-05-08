@@ -28,6 +28,7 @@ import org.json.JSONObject;
 public class Login extends AppCompatActivity {
     private CallbackManager callbackManager;
     private LoginButton loginButton;
+    private FacebookCallback<LoginResult> loginResult;
     private String id,name;
     Context context;
     @Override
@@ -112,6 +113,7 @@ public class Login extends AppCompatActivity {
     }*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
     protected void onStart(){
